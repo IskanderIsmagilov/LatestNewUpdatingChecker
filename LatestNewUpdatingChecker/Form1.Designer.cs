@@ -31,20 +31,24 @@
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.ToolTip toolTipHtml;
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBoxNewsPage = new System.Windows.Forms.TextBox();
             this.textBoxHtml = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.textBoxLastId = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.textBoxEMail = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.textBoxNotes = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             toolTipHtml = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
+            // 
+            // toolTipHtml
+            // 
+            toolTipHtml.Popup += new System.Windows.Forms.PopupEventHandler(this.toolTipHtml_Popup);
             // 
             // label1
             // 
@@ -56,12 +60,13 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "News web page:";
             // 
-            // textBox1
+            // textBoxNewsPage
             // 
-            this.textBox1.Location = new System.Drawing.Point(197, 22);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(440, 22);
-            this.textBox1.TabIndex = 1;
+            this.textBoxNewsPage.Location = new System.Drawing.Point(197, 22);
+            this.textBoxNewsPage.Name = "textBoxNewsPage";
+            this.textBoxNewsPage.Size = new System.Drawing.Size(440, 22);
+            this.textBoxNewsPage.TabIndex = 1;
+            this.textBoxNewsPage.TextChanged += new System.EventHandler(this.WebPage_TextChanged);
             // 
             // textBoxHtml
             // 
@@ -69,6 +74,7 @@
             this.textBoxHtml.Name = "textBoxHtml";
             this.textBoxHtml.Size = new System.Drawing.Size(440, 22);
             this.textBoxHtml.TabIndex = 3;
+            this.textBoxHtml.TextChanged += new System.EventHandler(this.textBoxHtml_TextChanged);
             // 
             // label2
             // 
@@ -80,13 +86,13 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "HTML tag:";
             // 
-            // textBox3
+            // textBoxLastId
             // 
-            this.textBox3.Location = new System.Drawing.Point(197, 80);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(440, 22);
-            this.textBox3.TabIndex = 5;
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
+            this.textBoxLastId.Location = new System.Drawing.Point(197, 80);
+            this.textBoxLastId.Name = "textBoxLastId";
+            this.textBoxLastId.Size = new System.Drawing.Size(440, 22);
+            this.textBoxLastId.TabIndex = 5;
+            this.textBoxLastId.TextChanged += new System.EventHandler(this.textBoxLastId_TextChanged);
             // 
             // label3
             // 
@@ -98,12 +104,12 @@
             this.label3.TabIndex = 4;
             this.label3.Text = "Last id:";
             // 
-            // textBox4
+            // textBoxEMail
             // 
-            this.textBox4.Location = new System.Drawing.Point(197, 112);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(440, 22);
-            this.textBox4.TabIndex = 7;
+            this.textBoxEMail.Location = new System.Drawing.Point(197, 112);
+            this.textBoxEMail.Name = "textBoxEMail";
+            this.textBoxEMail.Size = new System.Drawing.Size(440, 22);
+            this.textBoxEMail.TabIndex = 7;
             // 
             // label4
             // 
@@ -146,12 +152,12 @@
             this.checkBox1.Text = "Start with windows";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
-            // textBox5
+            // textBoxNotes
             // 
-            this.textBox5.Location = new System.Drawing.Point(197, 141);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(440, 22);
-            this.textBox5.TabIndex = 12;
+            this.textBoxNotes.Location = new System.Drawing.Point(197, 141);
+            this.textBoxNotes.Name = "textBoxNotes";
+            this.textBoxNotes.Size = new System.Drawing.Size(440, 22);
+            this.textBoxNotes.TabIndex = 12;
             // 
             // label5
             // 
@@ -163,30 +169,26 @@
             this.label5.TabIndex = 11;
             this.label5.Text = "Notification:";
             // 
-            // toolTipHtml
-            // 
-            toolTipHtml.Popup += new System.Windows.Forms.PopupEventHandler(this.toolTipHtml_Popup);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1012, 350);
-            this.Controls.Add(this.textBox5);
+            this.Controls.Add(this.textBoxNotes);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox4);
+            this.Controls.Add(this.textBoxEMail);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.textBoxLastId);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBoxHtml);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.textBoxNewsPage);
             this.Controls.Add(this.label1);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Checker";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -196,17 +198,17 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBoxNewsPage;
         private System.Windows.Forms.TextBox textBoxHtml;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox textBoxLastId;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox textBoxEMail;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox textBoxNotes;
         private System.Windows.Forms.Label label5;
     }
 }
