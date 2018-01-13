@@ -10,10 +10,20 @@ using System.Windows.Forms;
 
 namespace LatestNewUpdatingChecker
 {
-    public partial class Form1 : Form
+    partial class Form1 : Form
     {
-        public Form1()
+        public string WebPageText { get; set; }
+        public string HtmlTagText { get; set; }
+        public string LastIdText { get; set; }      
+        public string EmailText { get; set; }
+        public string NotificationText { get; set; }
+
+        public string Html_Id => HtmlTagText + LastIdText;
+        private readonly Checker _checker;
+
+        public Form1(Checker checker)
         {
+            _checker = checker;
             InitializeComponent();
         }
 
@@ -22,14 +32,26 @@ namespace LatestNewUpdatingChecker
 
         }
 
-        private void textBox3_TextChanged(object sender, EventArgs e)
+        private void textBoxLastId_TextChanged(object sender, EventArgs e)
         {
-
+            
         }
 
         private void toolTipHtml_Popup(object sender, PopupEventArgs e)
         {
             //toolTipHtml.SetToolTip(textBoxHtml, "HTML tag that keeps ID number of news.");
+        }
+
+        private void WebPage_TextChanged(object sender, EventArgs e)
+        {
+            WebPageText = (String)sender;
+            if (WebPageText.Substring(WebPageText.Length - 1) != "/") WebPageText += "/";
+        }
+
+        private void textBoxHtml_TextChanged(object sender, EventArgs e)
+        {
+            HtmlTagText = (String)sender;
+            if (HtmlTagText.Substring(HtmlTagText.Length - 1) != "/") HtmlTagText += "/";
         }
     }
 }
