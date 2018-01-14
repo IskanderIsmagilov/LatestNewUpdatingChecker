@@ -9,8 +9,8 @@ namespace LatestNewUpdatingChecker
 {
     static class Program
     {
-        private const string _dataFileName = "Data.txt";
-        private const string _newsPageContentFileName = "NewsPageContent.txt";
+        private const string _dataFileName = "Data.txt";        
+        private const string _newsPageContentFileName = "NewsPageContent.txt";          
 
         private static string _thisProgramPath => Assembly.GetEntryAssembly().Location;        
         static string currentDirectory = Path.GetDirectoryName(_thisProgramPath);
@@ -24,11 +24,12 @@ namespace LatestNewUpdatingChecker
         static void Main()
         {
             Starter.ThisProgramPath = _thisProgramPath;
-            Checker checker = new Checker();
+            Checker checker = new Checker(_dataFileLineNumbers);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Form mainForm = new Form1(checker);
+
             Application.Run(mainForm);
 
             while (true)

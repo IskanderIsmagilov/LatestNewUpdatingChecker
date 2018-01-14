@@ -1,14 +1,18 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Collections.Generic;
 
 
 namespace LatestNewUpdatingChecker
 {
     class Checker
-    {
-        public Checker()
-        {}
+    {      
+        public string[] ControlNames
+        {
+            get { return ControlNames; }
+            set { if (ControlNames == null) ControlNames = value; }
+        }       
 
         public StreamReader GetNewsPageContent(string NewsPageAddres)
         {
@@ -38,43 +42,66 @@ namespace LatestNewUpdatingChecker
                                 return part;                                
                             }
                         }
-                        break;
                     }
                 }
                 return null;
             }
         }
 
-        public bool CompareIds(string line,string fileNameLastId,string Html_Id)
+        public bool CompareIds(string line,string dataFilePath,string Html_Id)
         {
-            if (!string.IsNullOrEmpty(line) && line != GetLastExistingNewsId(fileNameLastId,Html_Id))
+            if (!string.IsNullOrEmpty(line) && line != GetLastExistingNewsId(dataFilePath,Html_Id))
             {
-                UpdateLastExistingNewsId(fileNameLastId,line);
+                UpdateDataFile(dataFilePath,line);
                 return true;
             }
             return false;
         }
 
-        public static void UpdateLastExistingNewsId(string fileNameLastId, string newsId)
-        {
-            using (var writer = new StreamWriter(fileNameLastId, false))
+        public void UpdateDataFile(string dataFilePath, Dictionary<int,string> lines)
+        {          
+            using (var reader = new StreamReader(dataFilePath))
+            using (var writer = new StreamWriter(dataFilePath, false))
             {
-                writer.Write(newsId);
+                int i = 0;
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    writer.WriteLine(lines.ContainsKey(i) ? lines[i] : line);
+                    i++;
+                }
             }
         }
 
-        public static string GetLastExistingNewsId(string fileNameLastId, string Html_Id)
+        public void UpdateDataFile(string dataFilePath) // is called if there is no the data file.
+        {       
+            using (var writer = new StreamWriter(dataFilePath, false))
+            {
+                for (int i = 0; i < _dataFileLineNumbers; i++)
+                {
+                    writer.WriteLine(i);
+                }                               
+            }
+        }
+
+        public string GetLineFromDataFile(string dataFilePath, int lineNum)
         {
-            FileInfo file = new FileInfo(fileNameLastId);
+            FileInfo file = new FileInfo(dataFilePath);
             if (file.Exists)
             {
-                using (var reader = new StreamReader(fileNameLastId))
+                using (var reader = new StreamReader(dataFilePath))
                 {
-                    return reader.ReadLine().Trim();
+                    int i = 0;
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        if (i == lineNum) return line;
+                        i++;
+                    }                                     
                 }
             }
-            UpdateLastExistingNewsId(fileNameLastId, Html_Id);
-            return Html_Id;
+            UpdateDataFile(dataFilePath);
+            return null;
         }
     }       
 }
