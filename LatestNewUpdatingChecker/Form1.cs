@@ -32,26 +32,33 @@ namespace LatestNewUpdatingChecker
 
         }
 
+        private void textBoxNewsPage_TextChanged(object sender, EventArgs e)
+        {
+            WebPageText = textBoxNewsPage.Text;
+            if (WebPageText.Substring(WebPageText.Length - 1) != "/") WebPageText += "/";
+
+        }
+
+        private void textBoxHtml_TextChanged(object sender, EventArgs e)
+        {
+            HtmlTagText = textBoxHtml.Text;
+            if (HtmlTagText.Substring(HtmlTagText.Length - 1) != "/") HtmlTagText += "/";
+        }
+       
         private void textBoxLastId_TextChanged(object sender, EventArgs e)
         {
-            
+            LastIdText = textBoxLastId.Text;
+            if (LastIdText.Substring(LastIdText.Length - 1) != "/") LastIdText += "/";
+        }       
+
+        private void checkBoxStartWithWindows_CheckedChanged(object sender, EventArgs e)
+        {
+            Starter.SetStartUp(checkBoxStartWithWindows.Checked);
         }
 
         private void toolTipHtml_Popup(object sender, PopupEventArgs e)
         {
             //toolTipHtml.SetToolTip(textBoxHtml, "HTML tag that keeps ID number of news.");
-        }
-
-        private void WebPage_TextChanged(object sender, EventArgs e)
-        {
-            WebPageText = (String)sender;
-            if (WebPageText.Substring(WebPageText.Length - 1) != "/") WebPageText += "/";
-        }
-
-        private void textBoxHtml_TextChanged(object sender, EventArgs e)
-        {
-            HtmlTagText = (String)sender;
-            if (HtmlTagText.Substring(HtmlTagText.Length - 1) != "/") HtmlTagText += "/";
         }
     }
 }
