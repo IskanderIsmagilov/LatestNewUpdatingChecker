@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -10,12 +9,12 @@ namespace LatestNewUpdatingChecker
 {
     static class Program
     {
-        private const string dataFileName = "Data.txt";
+        private const string _dataFileName = "Data.txt";
         private const string _newsPageContentFileName = "NewsPageContent.txt";
 
-        private static string thisProgramPath => Assembly.GetEntryAssembly().Location;        
-        static string currentDirectory = Path.GetDirectoryName(thisProgramPath);
-        static string dataFilePath = Path.Combine(currentDirectory, dataFileName);
+        private static string _thisProgramPath => Assembly.GetEntryAssembly().Location;        
+        static string currentDirectory = Path.GetDirectoryName(_thisProgramPath);
+        static string dataFilePath = Path.Combine(currentDirectory, _dataFileName);
 
         //SetStartUp(true);
         /// <summary>
@@ -24,6 +23,7 @@ namespace LatestNewUpdatingChecker
         [STAThread]
         static void Main()
         {
+            Starter.ThisProgramPath = _thisProgramPath;
             Checker checker = new Checker();
 
             Application.EnableVisualStyles();
@@ -45,21 +45,5 @@ namespace LatestNewUpdatingChecker
                 }
             }
         }
-
-        //private static void SetStartUp(bool set)
-        //{
-        //    RegistryKey rk = Registry.CurrentUser.OpenSubKey
-        //    ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-
-        //    if (set)
-        //    {
-        //        if ((rk.GetValue("TheApartmentsSellingNews") == null))
-        //        {
-        //            rk.SetValue("TheApartmentsSellingNews", thisProgramLocation);
-        //        }
-        //    }
-        //    else
-        //        rk.DeleteValue("TheApartmentsSellingNews", false);
-        //}
     }
 }
