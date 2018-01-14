@@ -50,25 +50,63 @@ namespace LatestNewUpdatingChecker
 
         public bool CompareIds(string line,string dataFilePath,string Html_Id)
         {
-            if (!string.IsNullOrEmpty(line) && line != GetLastExistingNewsId(dataFilePath,Html_Id))
+            if (!string.IsNullOrEmpty(line) && line != GetLineFromDataFile(dataFilePath,Html_Id))
             {
-                UpdateDataFile(dataFilePath,line);
+                Dictionary<string, string> Html_Id_Controller = new Dictionary<string, string>() { {Html_Id,line } };
+                UpdateDataFile(dataFilePath, Html_Id_Controller);
                 return true;
             }
             return false;
         }
 
-        public void UpdateDataFile(string dataFilePath, Dictionary<int,string> lines)
-        {          
-            using (var reader = new StreamReader(dataFilePath))
+        public void UpdateDataFile(string dataFilePath, Dictionary<string,string> controls)
+        {
+            List<string> lines = ReadDataFile(dataFilePath);
             using (var writer = new StreamWriter(dataFilePath, false))
             {
-                int i = 0;
-                string line;
-                while ((line = reader.ReadLine()) != null)
+                for (int i=0;i<lines.Count;i++)
                 {
-                    writer.WriteLine(lines.ContainsKey(i) ? lines[i] : line);
-                    i++;
+                    string line = lines[i];
+                    int colon = line.IndexOf(':');
+                    string key = line.Substring(0, colon);
+                    if (controls.ContainsKey(key))
+                    {
+                        line = key+ ":"+controls[key];                        
+                        controls.Remove(key);
+                    }
+                    writer.Write(line);
+                }
+                if (controls.Count != 0)
+                {
+                    foreach (KeyValuePair<string, string> control in controls)
+                    {
+                        writer.Write(control.Key+":"+control.Value);
+                    }
+                }
+            }            
+        }
+
+        public void UpdateDataFile(string dataFilePath, KeyValuePair<string, string> control)
+        {
+            bool found = false;
+            List<string> lines = ReadDataFile(dataFilePath);
+            using (var writer = new StreamWriter(dataFilePath, false))
+            {
+                for (int i = 0; i < lines.Count; i++)
+                {
+                    string line = lines[i];
+                    int colon = line.IndexOf(':');
+                    string key = line.Substring(0, colon);
+                    if (control.Key == key)
+                    {
+                        line = key + ":" + control.Key;
+                        found = true;
+                    }
+                    writer.Write(line);
+                }
+                if (!found)
+                {
+                    writer.Write(control.Key + ":" + control.Value);
                 }
             }
         }
@@ -77,30 +115,35 @@ namespace LatestNewUpdatingChecker
         {       
             using (var writer = new StreamWriter(dataFilePath, false))
             {
-                for (int i = 0; i < _dataFileLineNumbers; i++)
+                foreach (string name in ControlNames)
                 {
-                    writer.WriteLine(i);
+                    writer.WriteLine(name+":");
                 }                               
             }
         }
 
-        public string GetLineFromDataFile(string dataFilePath, int lineNum)
+        public List<string> ReadDataFile(string dataFilePath)
         {
             FileInfo file = new FileInfo(dataFilePath);
             if (file.Exists)
             {
                 using (var reader = new StreamReader(dataFilePath))
                 {
-                    int i = 0;
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        if (i == lineNum) return line;
-                        i++;
-                    }                                     
+                    string text = reader.ReadToEnd();
+                    return new List<string>(text.Split('\n'));
                 }
             }
             UpdateDataFile(dataFilePath);
+            return null;
+        }
+
+        public string GetLineFromDataFile(string dataFilePath, string controlName)
+        {
+            List<string> lines = ReadDataFile(dataFilePath);
+            foreach (string line in lines)
+            {                            
+                if (line.Contains(controlName)) return line;
+            }
             return null;
         }
     }       
