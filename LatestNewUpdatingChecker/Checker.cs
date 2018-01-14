@@ -1,107 +1,80 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Diagnostics;
+﻿using System;
 using System.IO;
 using System.Net;
-using System.Reflection;
-using System.Threading;
+
 
 namespace LatestNewUpdatingChecker
 {
     class Checker
     {
         public Checker()
-        {
+        {}
 
+        public StreamReader GetNewsPageContent(string NewsPageAddres)
+        {
+            var webClient = new WebClient();
+            byte[] newsPage = webClient.DownloadData(NewsPageAddres);
+
+            using (MemoryStream stream = new MemoryStream(newsPage))
+            {
+                return new StreamReader(stream);
+            }          
         }
-        private static string Executable => Assembly.GetEntryAssembly().Location;
-        SetStartUp(true);
-        string currentDirectory = Path.GetDirectoryName(Executable);
-        string fileName = Path.Combine(currentDirectory, "LastNewsId.txt");
-        Console.WriteLine(@"File path: {0}.", fileName);
-        while (true)
-        {
-            if (CheckForNewNews(fileName))
-            {
-                Console.WriteLine("На сайте есть новая новость.");
-                Process.Start("http://frgsrb.ru/news/?SECTION_ID=485");
-            }
-            else
-            {
-                TimeSpan forOneHour = new TimeSpan(1, 0, 0);
-                Thread.Sleep(forOneHour);
-            }
-        }
-    }
 
-    public static bool CheckForNewNews(string fileName)
-    {
-        var webClient = new WebClient();
-        byte[] googleHome = webClient.DownloadData("http://frgsrb.ru/news/?SECTION_ID=485");
-
-        using (MemoryStream stream = new MemoryStream(googleHome))
-        using (var reader = new StreamReader(stream))
+        public string GetLastNewsId(StreamReader content,string Html_Id)
         {
-            string line;
-            while ((line = reader.ReadLine()) != null)
+            using (content)
             {
-                if (line.Contains("/news/?ELEMENT_ID="))
+                string line;
+                while ((line = content.ReadLine()) != null)
                 {
-                    string[] parts = line.Split(new Char[] { '"' }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (string part in parts)
+                    if (line.Contains(Html_Id))
                     {
-                        if (part.Contains("/news/?ELEMENT_ID="))
+                        string[] parts = line.Split(new Char[] { '"' }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (string part in parts)
                         {
-                            line = part;
-                            break;
+                            if (part.Contains(Html_Id))
+                            {
+                                return part;                                
+                            }
                         }
+                        break;
                     }
-                    break;
                 }
+                return null;
             }
-            if (!string.IsNullOrEmpty(line) && line != GetLastExistingNewsId(fileName))
+        }
+
+        public bool CompareIds(string line,string fileNameLastId,string Html_Id)
+        {
+            if (!string.IsNullOrEmpty(line) && line != GetLastExistingNewsId(fileNameLastId,Html_Id))
             {
-                UpdateLastExistingNewsId(fileName, line);
+                UpdateLastExistingNewsId(fileNameLastId,line);
                 return true;
             }
             return false;
         }
-    }
 
-    public static void UpdateLastExistingNewsId(string fileName, string newsId)
-    {
-        using (var writer = new StreamWriter(fileName, false))
+        public static void UpdateLastExistingNewsId(string fileNameLastId, string newsId)
         {
-            writer.Write(newsId);
-        }
-    }
-
-    public static string GetLastExistingNewsId(string fileName)
-    {
-        FileInfo file = new FileInfo(fileName);
-        if (file.Exists)
-        {
-            using (var reader = new StreamReader(fileName))
+            using (var writer = new StreamWriter(fileNameLastId, false))
             {
-                return reader.ReadLine().Trim();
+                writer.Write(newsId);
             }
         }
-        UpdateLastExistingNewsId(fileName, "/news/?ELEMENT_ID=14718");
-        return "/news/?ELEMENT_ID=14718";
-    }
-    private static void SetStartUp(bool set)
-    {
-        RegistryKey rk = Registry.CurrentUser.OpenSubKey
-        ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
-        if (set)
+        public static string GetLastExistingNewsId(string fileNameLastId, string Html_Id)
         {
-            if ((rk.GetValue("TheApartmentsSellingNews") == null))
+            FileInfo file = new FileInfo(fileNameLastId);
+            if (file.Exists)
             {
-                rk.SetValue("TheApartmentsSellingNews", Executable);
+                using (var reader = new StreamReader(fileNameLastId))
+                {
+                    return reader.ReadLine().Trim();
+                }
             }
+            UpdateLastExistingNewsId(fileNameLastId, Html_Id);
+            return Html_Id;
         }
-        else
-            rk.DeleteValue("TheApartmentsSellingNews", false);
-    }
+    }       
 }
