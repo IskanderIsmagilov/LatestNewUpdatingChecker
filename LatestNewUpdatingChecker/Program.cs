@@ -16,16 +16,12 @@ namespace LatestNewUpdatingChecker
         static string currentDirectory = Path.GetDirectoryName(_thisProgramPath);
         static string dataFilePath = Path.Combine(currentDirectory, _dataFileName);
 
-        //SetStartUp(true);
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
             Starter.ThisProgramPath = _thisProgramPath;
-            Checker checker = new Checker();
             Data data = new Data(dataFilePath);
+            Checker checker = new Checker(data);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

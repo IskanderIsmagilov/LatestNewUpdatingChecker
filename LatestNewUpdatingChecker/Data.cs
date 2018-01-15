@@ -19,8 +19,8 @@ namespace LatestNewUpdatingChecker
             }
             else
             {
-                UpdateProperties();
                 ReadDataFile();
+                UpdateProperties();
             }
         }
 
@@ -75,13 +75,14 @@ namespace LatestNewUpdatingChecker
                 }
                 if (changes.Count != 0)
                 {
-                    foreach (KeyValuePair<string, string> control in changes)
+                    foreach (KeyValuePair<string, string> change in changes)
                     {
-                        writer.Write(control.Key + ":" + control.Value);
+                        string newLine = change.Key + ":" + change.Value;
+                        _lines.Add(newLine);
+                        writer.Write(newLine);
                     }
                 }
             }
-            ReadDataFile();
         }
 
         public void UpdateDataFile(string key, string value)
@@ -101,11 +102,12 @@ namespace LatestNewUpdatingChecker
                     writer.Write(_lines[i]);
                 }
                 if (!found)
-                {                    
-                    writer.Write(key + ":" + value);                    
+                {
+                    string newLine = key + ":" + value;
+                    _lines.Add(newLine);
+                    writer.Write(newLine);                    
                 }
             }
-            ReadDataFile();
         }
 
         private void CreateFile()

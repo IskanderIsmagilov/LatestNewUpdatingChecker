@@ -17,7 +17,7 @@ namespace LatestNewUpdatingChecker
 
         public Form1(Checker checker,Data data)
         {
-            //_checker = checker;
+            _checker = checker;
             _objectData = data;
             InitializeComponent();
         }
@@ -32,7 +32,8 @@ namespace LatestNewUpdatingChecker
             string webPageText;
             webPageText = textBoxNewsPage.Text;            
             if (webPageText.Substring(webPageText.Length - 1) != "/") webPageText += "/";
-            _objectData.WebPageText = webPageText;            
+            _objectData.WebPageText = webPageText;           
+            _objectData.UpdateDataFile("WebPageText", webPageText);
 
         }
 
@@ -41,6 +42,8 @@ namespace LatestNewUpdatingChecker
             string htmlTagText;
             htmlTagText = textBoxHtml.Text;
             if (htmlTagText.Substring(htmlTagText.Length - 1) != "/") htmlTagText += "/";
+            _objectData.HtmlTagText = htmlTagText;
+            _objectData.UpdateDataFile("HtmlTagText", htmlTagText);
         }
        
         private void textBoxLastId_TextChanged(object sender, EventArgs e)
@@ -53,11 +56,16 @@ namespace LatestNewUpdatingChecker
                 return;
             }
             lastIdText += "/";
+            _objectData.LastIdNum = lastIdText;
+            _objectData.UpdateDataFile("LastIdNum", lastIdText);
         }       
 
         private void checkBoxStartWithWindows_CheckedChanged(object sender, EventArgs e)
         {
-            Starter.SetStartUp(checkBoxStartWithWindows.Checked);
+            bool start = checkBoxStartWithWindows.Checked;
+            Starter.SetStartUp(start);
+            _objectData.StartWithWindows = start;
+            _objectData.UpdateDataFile("StartWithWindows", ""+start);
         }
 
         private void toolTipHtml_Popup(object sender, PopupEventArgs e)
