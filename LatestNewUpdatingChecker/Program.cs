@@ -24,11 +24,12 @@ namespace LatestNewUpdatingChecker
         static void Main()
         {
             Starter.ThisProgramPath = _thisProgramPath;
-            Checker checker = new Checker(_dataFileLineNumbers);
+            Checker checker = new Checker();
+            Data data = new Data(dataFilePath);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Form mainForm = new Form1(checker);
+            Form mainForm = new Form1(checker, data);
 
             Application.Run(mainForm);
 

@@ -5,7 +5,7 @@ namespace LatestNewUpdatingChecker
     static class Starter
     {
         private const string _thisProgramName = "LastNewsUpdatingChecker";
-        private const string _runSubKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+        private const string _runSubKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";        
         public static string ThisProgramPath
         {
             get { return ThisProgramPath; }

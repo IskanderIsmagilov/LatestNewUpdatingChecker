@@ -12,18 +12,13 @@ namespace LatestNewUpdatingChecker
 {
     partial class Form1 : Form
     {
-        public string WebPageText { get; set; }
-        public string HtmlTagText { get; set; }
-        public string LastIdText { get; set; }      
-        public string EmailText { get; set; }
-        public string NotificationText { get; set; }
+        private readonly Data _objectData;
+        //private readonly Checker _checker;
 
-        public string Html_Id => HtmlTagText + LastIdText;
-        private readonly Checker _checker;
-
-        public Form1(Checker checker)
+        public Form1(Checker checker,Data data)
         {
-            _checker = checker;
+            //_checker = checker;
+            _objectData = data;
             InitializeComponent();
         }
 
@@ -34,21 +29,30 @@ namespace LatestNewUpdatingChecker
 
         private void textBoxNewsPage_TextChanged(object sender, EventArgs e)
         {
-            WebPageText = textBoxNewsPage.Text;
-            if (WebPageText.Substring(WebPageText.Length - 1) != "/") WebPageText += "/";
+            string webPageText;
+            webPageText = textBoxNewsPage.Text;            
+            if (webPageText.Substring(webPageText.Length - 1) != "/") webPageText += "/";
+            _objectData.WebPageText = webPageText;            
 
         }
 
         private void textBoxHtml_TextChanged(object sender, EventArgs e)
         {
-            HtmlTagText = textBoxHtml.Text;
-            if (HtmlTagText.Substring(HtmlTagText.Length - 1) != "/") HtmlTagText += "/";
+            string htmlTagText;
+            htmlTagText = textBoxHtml.Text;
+            if (htmlTagText.Substring(htmlTagText.Length - 1) != "/") htmlTagText += "/";
         }
        
         private void textBoxLastId_TextChanged(object sender, EventArgs e)
         {
-            LastIdText = textBoxLastId.Text;
-            if (LastIdText.Substring(LastIdText.Length - 1) != "/") LastIdText += "/";
+            string lastIdText;
+            lastIdText = textBoxLastId.Text;
+            if (!int.TryParse(lastIdText, out int lastIdNum))
+            {
+                textBoxNotes.Text = "Id you is not a num, please enter a number";
+                return;
+            }
+            lastIdText += "/";
         }       
 
         private void checkBoxStartWithWindows_CheckedChanged(object sender, EventArgs e)
