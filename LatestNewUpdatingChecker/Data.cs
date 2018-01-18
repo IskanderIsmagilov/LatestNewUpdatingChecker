@@ -26,19 +26,21 @@ namespace LatestNewUpdatingChecker
 
         private string _dataFilePath;
         private List<string> _lines;
-        public string WebPageText { get; set; }
-        public string HtmlTagText { get; set; }
+        public string textBoxNewsPage { get; set; }
+        public string textBoxHtml { get; set; }
         private int _lastIdNum;
-        public string LastIdNum
+        public string textBoxLastId
         {
             get { return ""+_lastIdNum; }
-            set { _lastIdNum = int.Parse(value); }
+            set
+            {                
+                bool test = int.TryParse(value, out _lastIdNum);   
+            }         
         }
         public string EmailText { get; set; }
         public string NotificationText { get; set; }
-        public bool StartWithWindows { get; set; }
         
-        public string Html_Id => HtmlTagText + LastIdNum;
+        public string Html_Id => textBoxHtml + textBoxLastId;
 
         public void ReadDataFile()
         {
@@ -71,7 +73,7 @@ namespace LatestNewUpdatingChecker
                         _lines[i] = key + ":" + changes[key];
                         changes.Remove(key);
                     }
-                    writer.Write(_lines[i]);
+                    writer.WriteLine(_lines[i]);
                 }
                 if (changes.Count != 0)
                 {
@@ -79,7 +81,7 @@ namespace LatestNewUpdatingChecker
                     {
                         string newLine = change.Key + ":" + change.Value;
                         _lines.Add(newLine);
-                        writer.Write(newLine);
+                        writer.WriteLine(newLine);
                     }
                 }
             }
@@ -99,13 +101,13 @@ namespace LatestNewUpdatingChecker
                         _lines[i] = keyLine + ":" + value;
                         found = true;
                     }
-                    writer.Write(_lines[i]);
+                    writer.WriteLine(_lines[i]);
                 }
                 if (!found)
                 {
                     string newLine = key + ":" + value;
                     _lines.Add(newLine);
-                    writer.Write(newLine);                    
+                    writer.WriteLine(newLine);                    
                 }
             }
         }
@@ -124,12 +126,19 @@ namespace LatestNewUpdatingChecker
 
         private void UpdateProperties()
         {            
-            foreach (string line in _lines)
-            {
-                int colon = line.IndexOf(':');
-                string key = line.Substring(0, colon);
-                string value = line.Substring(colon + 1);
-                GetType().GetProperty(key).SetValue(this, value);
+            for (int i = 0;i<_lines.Count;i++)
+            {                
+                int colon = _lines[i].IndexOf(':');
+                if (colon == -1)
+                {
+                    _lines.Remove(_lines[i]);
+                    continue;
+                }
+                string key = _lines[i].Substring(0, colon);
+                string value = _lines[i].Substring(colon + 1);
+                PropertyInfo property = GetType().GetProperty(key);
+                if (property == null) _lines.Remove(_lines[i]);
+                else property.SetValue(this, value);                
             }
         }
     }

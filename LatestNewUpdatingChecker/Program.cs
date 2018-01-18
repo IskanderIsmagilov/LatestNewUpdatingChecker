@@ -28,20 +28,6 @@ namespace LatestNewUpdatingChecker
             Form mainForm = new Form1(checker, data);
 
             Application.Run(mainForm);
-
-            while (true)
-            {
-                if (CheckForNewNews(dataFilePath))
-                {
-                    Console.WriteLine("На сайте есть новая новость.");
-                    Process.Start("http://frgsrb.ru/news/?SECTION_ID=485");
-                }
-                else
-                {
-                    TimeSpan forOneHour = new TimeSpan(1, 0, 0);
-                    Thread.Sleep(forOneHour);
-                }
-            }
         }
     }
 }

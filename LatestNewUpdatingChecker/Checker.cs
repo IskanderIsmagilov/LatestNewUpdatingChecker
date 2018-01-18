@@ -2,7 +2,8 @@
 using System.IO;
 using System.Net;
 using System.Collections.Generic;
-
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LatestNewUpdatingChecker
 {
@@ -15,32 +16,30 @@ namespace LatestNewUpdatingChecker
             objectData = data;
         }
 
-        public StreamReader GetNewsPageContent(string NewsPageAddres)
+        public MemoryStream GetNewsPageContent()
         {
             var webClient = new WebClient();
-            byte[] newsPage = webClient.DownloadData(NewsPageAddres);
-
-            using (MemoryStream stream = new MemoryStream(newsPage))
-            {
-                return new StreamReader(stream);
-            }          
+            byte[] newsPage = webClient.DownloadData(objectData.textBoxNewsPage);
+            
+            return new MemoryStream(newsPage);            
         }
 
-        public string GetLastNewsId(StreamReader content,string Html_Id)
+        public string GetLastNewsId(MemoryStream content)
         {
             using (content)
+            using (StreamReader contentReader = new StreamReader(content))
             {
                 string line;
-                while ((line = content.ReadLine()) != null)
+                while ((line = contentReader.ReadLine()) != null)
                 {
-                    if (line.Contains(Html_Id))
+                    if (line.Contains(objectData.Html_Id))
                     {
                         string[] parts = line.Split(new Char[] { '"' }, StringSplitOptions.RemoveEmptyEntries);
                         foreach (string part in parts)
                         {
-                            if (part.Contains(Html_Id))
+                            if (part.Contains(objectData.Html_Id))
                             {
-                                return part;                                
+                                return part;
                             }
                         }
                     }
@@ -49,15 +48,28 @@ namespace LatestNewUpdatingChecker
             }
         }
 
-        public bool CompareIds(string line,string Html_Id)
+        public bool CompareIds(string line)
         {
             if (!string.IsNullOrEmpty(line) && line != objectData.Html_Id)
             {
-                Dictionary<string, string> Html_Id_Controller = new Dictionary<string, string>() { {Html_Id,line } };
+                Dictionary<string, string> Html_Id_Controller = new Dictionary<string, string>() { { objectData.Html_Id, line } };
                 objectData.UpdateDataFile(Html_Id_Controller);
                 return true;
             }
             return false;
-        }        
-    }       
+        }
+
+        public async Task<bool> CheckForNewNews()
+        {
+            MemoryStream content = GetNewsPageContent();
+            string Found_Html_Id = GetLastNewsId(content);
+            bool gotNew = CompareIds(Found_Html_Id);           
+            if (!gotNew)
+            {
+                TimeSpan forOneHour = new TimeSpan(0, 45, 0);
+                await Task.Delay(forOneHour);
+            }
+            return gotNew;
+        }
+    }
 }

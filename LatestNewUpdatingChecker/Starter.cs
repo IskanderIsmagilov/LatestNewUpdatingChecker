@@ -6,12 +6,13 @@ namespace LatestNewUpdatingChecker
     {
         private const string _thisProgramName = "LastNewsUpdatingChecker";
         private const string _runSubKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";        
+        private static string thisProgramPath;
         public static string ThisProgramPath
         {
-            get { return ThisProgramPath; }
+            get { return thisProgramPath; }
             set
             {
-                if (string.IsNullOrEmpty(ThisProgramPath)) ThisProgramPath = value;
+                if (string.IsNullOrEmpty(thisProgramPath)) thisProgramPath = value;
             }
         }       
 

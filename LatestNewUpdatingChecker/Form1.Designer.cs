@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.ToolTip toolTipHtml;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxNewsPage = new System.Windows.Forms.TextBox();
             this.textBoxHtml = new System.Windows.Forms.TextBox();
@@ -42,6 +43,7 @@
             this.textBoxNotes = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.checkBoxIsChecking = new System.Windows.Forms.CheckBox();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             toolTipHtml = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
@@ -161,6 +163,14 @@
             this.checkBoxIsChecking.TabIndex = 13;
             this.checkBoxIsChecking.Text = "Start checking";
             this.checkBoxIsChecking.UseVisualStyleBackColor = true;
+            this.checkBoxIsChecking.CheckedChanged += new System.EventHandler(this.checkBoxIsChecking_CheckedChanged);
+            // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Visible = true;
+            this.notifyIcon1.Click += new System.EventHandler(this.notifyIcon_Click);
             // 
             // Form1
             // 
@@ -182,6 +192,8 @@
             this.Name = "Form1";
             this.Text = "Checker";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.ResizeBegin += new System.EventHandler(this.Form1_Resize);
+            this.Resize += new System.EventHandler(this.Form1_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -201,6 +213,7 @@
         private System.Windows.Forms.TextBox textBoxNotes;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox checkBoxIsChecking;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
     }
 }
 
