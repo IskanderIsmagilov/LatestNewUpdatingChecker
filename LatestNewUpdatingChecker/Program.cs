@@ -12,12 +12,12 @@ namespace LatestNewUpdatingChecker
         private const string _dataFileName = "Data.txt";        
         private const string _newsPageContentFileName = "NewsPageContent.txt";          
 
-        private static string _thisProgramPath => Assembly.GetEntryAssembly().Location;        
+        private static string _thisProgramPath => Application.ExecutablePath;        
         static string currentDirectory = Path.GetDirectoryName(_thisProgramPath);
         static string dataFilePath = Path.Combine(currentDirectory, _dataFileName);
 
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             Starter.ThisProgramPath = _thisProgramPath;
             Data data = new Data(dataFilePath);

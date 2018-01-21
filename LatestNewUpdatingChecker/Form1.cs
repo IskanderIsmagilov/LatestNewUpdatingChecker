@@ -20,10 +20,9 @@ namespace LatestNewUpdatingChecker
         public Form1(Checker checker,Data data)
         {
             _trayIcon = new NotifyIcon();
-            InitializeComponent();
-
+            InitializeComponent();            
             _checker = checker;
-            _objectData = data;
+            _objectData = data;                                    
             PropertyInfo[] objectDataProps = _objectData.GetType().GetProperties();
             foreach (PropertyInfo prop in objectDataProps)
             {
@@ -32,6 +31,17 @@ namespace LatestNewUpdatingChecker
                 {
                     control[0].Text = prop.GetValue(_objectData)?.ToString();
                 }
+            }
+
+            checkBoxStartWithWindows.Checked = Starter.WithWindows;
+            string[] args = Environment.GetCommandLineArgs();
+
+            if (args.Length>0 && Array.IndexOf(args,"startup")!=-1)
+            {
+                WindowState = FormWindowState.Minimized;
+                Form1_Resize(null, null);
+                checkBoxIsChecking.Checked = true;
+                checkBoxIsChecking_CheckedChanged(null, null);
             }
         }
 
@@ -100,11 +110,11 @@ namespace LatestNewUpdatingChecker
 
         private void Form1_Resize(object sender, EventArgs e)
         {
-            if (FormWindowState.Minimized == this.WindowState)
+            if (FormWindowState.Minimized == WindowState)
             {
                 ShowInTaskbar = false;
                 notifyIcon1.Visible = true;
-                notifyIcon1.ShowBalloonTip(500);
+                //notifyIcon1.ShowBalloonTip(500);
                 this.Hide();                
             }          
         }
@@ -114,6 +124,7 @@ namespace LatestNewUpdatingChecker
             WindowState = FormWindowState.Normal;
             notifyIcon1.Visible = false;
             ShowInTaskbar = true;
+            this.Show();
         }
     }
 }
