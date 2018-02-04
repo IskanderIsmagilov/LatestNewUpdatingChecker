@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace LatestNewUpdatingChecker
 {
     class Data
-    {        
+    {
+        private const string caretReturn =  "\r";
         public Data(string dataFilePath)
         {
             _dataFilePath = dataFilePath;
@@ -27,6 +27,7 @@ namespace LatestNewUpdatingChecker
         private string _dataFilePath;
         private List<string> _lines;
         public string textBoxNewsPage { get; set; }
+        public string textBoxEMail { get; set; }
         public string textBoxHtml { get; set; }
         private int _lastIdNum;
         public string textBoxLastId
@@ -95,6 +96,11 @@ namespace LatestNewUpdatingChecker
                 for (int i = 0; i < _lines.Count; i++)
                 {
                     int colon = _lines[i].IndexOf(':');
+                    if (colon == -1)
+                    {
+                        _lines.Remove(_lines[i]);
+                        continue;
+                    }
                     string keyLine = _lines[i].Substring(0, colon);
                     if (key==keyLine)
                     {
@@ -124,7 +130,7 @@ namespace LatestNewUpdatingChecker
             ReadDataFile();
         }
 
-        private void UpdateProperties()
+        public void UpdateProperties()
         {            
             for (int i = 0;i<_lines.Count;i++)
             {                
@@ -134,12 +140,13 @@ namespace LatestNewUpdatingChecker
                     _lines.Remove(_lines[i]);
                     continue;
                 }
+                _lines[i] = _lines[i].Replace(caretReturn, "");
                 string key = _lines[i].Substring(0, colon);
                 string value = _lines[i].Substring(colon + 1);
                 PropertyInfo property = GetType().GetProperty(key);
                 if (property == null) _lines.Remove(_lines[i]);
                 else property.SetValue(this, value);                
-            }
+            }           
         }
     }
 }

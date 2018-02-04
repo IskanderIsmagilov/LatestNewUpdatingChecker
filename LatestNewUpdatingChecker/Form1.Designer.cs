@@ -111,6 +111,7 @@
             this.textBoxEMail.Name = "textBoxEMail";
             this.textBoxEMail.Size = new System.Drawing.Size(440, 22);
             this.textBoxEMail.TabIndex = 7;
+            this.textBoxEMail.TextChanged += new System.EventHandler(this.textBoxEMail_TextChanged);
             // 
             // label4
             // 

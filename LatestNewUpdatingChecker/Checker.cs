@@ -32,12 +32,12 @@ namespace LatestNewUpdatingChecker
                 string line;
                 while ((line = contentReader.ReadLine()) != null)
                 {
-                    if (line.Contains(objectData.Html_Id))
+                    if (line.Contains(objectData.textBoxHtml)) //textBoxHtml
                     {
                         string[] parts = line.Split(new Char[] { '"' }, StringSplitOptions.RemoveEmptyEntries);
                         foreach (string part in parts)
                         {
-                            if (part.Contains(objectData.Html_Id))
+                            if (part.Contains(objectData.textBoxHtml))
                             {
                                 return part;
                             }
@@ -52,8 +52,9 @@ namespace LatestNewUpdatingChecker
         {
             if (!string.IsNullOrEmpty(line) && line != objectData.Html_Id)
             {
-                Dictionary<string, string> Html_Id_Controller = new Dictionary<string, string>() { { objectData.Html_Id, line } };
-                objectData.UpdateDataFile(Html_Id_Controller);
+                string newId = line.Replace(objectData.textBoxHtml, "");                
+                objectData.UpdateDataFile(nameof(objectData.textBoxLastId),newId);
+                objectData.UpdateProperties();                
                 return true;
             }
             return false;

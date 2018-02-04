@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Threading;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Configuration;
 
 namespace LatestNewUpdatingChecker
 {
     partial class Form1 : Form
-    {
+    {    
         private NotifyIcon _trayIcon;
         private readonly Data _objectData;
         private readonly Checker _checker;
+        private bool emailIsValid => textBoxEMail.Text.Contains("@");
 
         public Form1(Checker checker,Data data)
         {
@@ -59,6 +57,14 @@ namespace LatestNewUpdatingChecker
 
         }
 
+        private void textBoxEMail_TextChanged(object sender, EventArgs e)
+        {
+            string Email;
+            Email = textBoxEMail.Text;
+            _objectData.textBoxEMail = Email;
+            _objectData.UpdateDataFile(nameof(_objectData.textBoxEMail), Email);
+        }
+
         private void textBoxHtml_TextChanged(object sender, EventArgs e)
         {
             string htmlTagText;
@@ -99,14 +105,7 @@ namespace LatestNewUpdatingChecker
                 bool gotNew = await checking;
                 if (gotNew) UpdateNotification();
             }
-        }
-
-        private void UpdateNotification()
-        {            
-            textBoxLastId.Text = _objectData.textBoxLastId;
-            textBoxNotes.Text = $"Last news is gotten: {DateTime.Now}";
-            notifyIcon_Click(null, null);
-        }
+        }       
 
         private void Form1_Resize(object sender, EventArgs e)
         {
@@ -125,6 +124,48 @@ namespace LatestNewUpdatingChecker
             notifyIcon1.Visible = false;
             ShowInTaskbar = true;
             this.Show();
+        }
+
+        private void UpdateNotification()
+        {
+            textBoxLastId.Text = _objectData.textBoxLastId;
+            textBoxNotes.Text = $"Last news is gotten: {DateTime.Now}";
+            notifyIcon_Click(null, null);
+            SendEmail();
+        }
+
+        private void SendEmail()
+        {
+            string toEmailAddress = textBoxEMail.Text;
+            try
+            {
+                var login = new NetworkCredential(ConfigurationManager.AppSettings["smtpUser"], ConfigurationManager.AppSettings["smtpPass"]);
+                //var login = new NetworkCredential("marafon2.25@mail.ru", "prazdnik");
+                var client = new SmtpClient(ConfigurationManager.AppSettings["smtpServer"]);
+                client.Port = int.Parse(ConfigurationManager.AppSettings["smtpPort"]);
+                client.UseDefaultCredentials = false;
+                client.Credentials = login;
+                client.EnableSsl = true;
+                var msg = new MailMessage();
+                msg.From = new MailAddress(ConfigurationManager.AppSettings["smtpUser"]);
+                msg.To.Add(toEmailAddress);
+                msg.Subject = "New news.";
+                msg.Body = "You got new news on: "+textBoxNewsPage.Text;
+                msg.IsBodyHtml = false;
+                client.Send(msg);
+            }
+            catch (FormatException)
+            {
+                textBoxNotes.Text = "Email format is incorrect, check it.";
+            }
+            catch (SmtpFailedRecipientException)
+            {
+                textBoxNotes.Text = "Email you entered doesn't exist.";
+            }
+            catch (SmtpException)
+            {
+                textBoxNotes.Text = "Your email is inaccessible.";
+            }
         }
     }
 }
