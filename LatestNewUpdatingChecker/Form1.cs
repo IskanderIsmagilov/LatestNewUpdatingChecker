@@ -139,8 +139,7 @@ namespace LatestNewUpdatingChecker
             string toEmailAddress = textBoxEMail.Text;
             try
             {
-                var login = new NetworkCredential(ConfigurationManager.AppSettings["smtpUser"], ConfigurationManager.AppSettings["smtpPass"]);
-                //var login = new NetworkCredential("marafon2.25@mail.ru", "prazdnik");
+                var login = new NetworkCredential(ConfigurationManager.AppSettings["smtpUser"], ConfigurationManager.AppSettings["smtpPass"]);                
                 var client = new SmtpClient(ConfigurationManager.AppSettings["smtpServer"]);
                 client.Port = int.Parse(ConfigurationManager.AppSettings["smtpPort"]);
                 client.UseDefaultCredentials = false;
